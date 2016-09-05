@@ -1,8 +1,8 @@
 "use strict";
 describe('InvertedIndex',function(){
   let index = require('../src/inverted-index');
-  let book_path = 'C:/Users/Cyrielo/Documents/CYRIELO DOCUMENTS/Development/'+
-    'Web Apps/invertedIndex/jasmine/books.json';
+  let book_path = 'jasmine/books.json';
+  let doc_path = 'jasmine/document.json';
   index.createIndex(book_path).then( data =>{
 
   });
@@ -40,9 +40,20 @@ describe('InvertedIndex',function(){
 
     it('should verifies the index maps the string keys to the correct' +
       ' objects in the JSON array', function(){
-
+      expect( index.searchIndex('Alice', 'elf') ).toEqual(['0', '1']);
     });
 
+    it('Should verify data multiple index could be built', function(done){
+      index.createIndex(doc_path).then(()=>{
+        expect( Object.keys(index.invertedIndexes).length ).toEqual(2);
+        done();
+      });
+    });
+
+    it('Should be able to delete an invertedIndex object by it\'s file path', function(){
+      index.removeIndex(doc_path);
+      expect( Object.keys(index.invertedIndexes).length ).toEqual(1);
+    });
   });
 
   describe('Search index', function(){
