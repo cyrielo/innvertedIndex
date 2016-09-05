@@ -19,11 +19,10 @@ class InvertedIndex {
   createIndex(filePath){
     return new Promise((fulfill, reject) => {
       this.readJsonFile(filePath).then( (jsonObject) => {
-        //ask for the index to be built
-        let indexedObject = this.buildIndex(jsonObject);
-        this.populateIndex( filePath, indexedObject ); //save the index
+        //ask for the index to be built and populated
+        this.populateIndex( filePath, jsonObject ); //save the index
 
-        fulfill(indexedObject);
+        fulfill(this);
 
       }).catch((error) => {
 
@@ -110,34 +109,24 @@ class InvertedIndex {
    * saves multiple index created using their fileName as key
    * @method populateIndex
    * @param {String} fileName
-   * @param {Object} indexedObject
+   * @param {Object} jsonObject
    * @return undefined
    **/
-  populateIndex( fileName, indexedObject ){
-    //let's use it's filename to save the indexedObject
-    if( !this.invertedIndexes.hasOwnProperty(fileName) ){
-      this.invertedIndexes[fileName] = indexedObject;
-    }
-  }
-
-  /**
-   * We build the index
-   * @method buildIndex
-   * @param {Object} objects An array of objects to index
-   * @return {Object} The indexedObject built
-   **/
-  buildIndex(objects){
+  populateIndex( fileName, jsonObject ){
     this.temp = {}; //makes sure the placeholder is empty before building
-    for( let key in objects ){
-      //we break title and text and build their unique terms
-      let title_words = objects[key].title.split(' ');
-      let text_words = objects[key].text.split(' ');
+    for( let key in jsonObject ){
+      if( jsonObject.hasOwnProperty(key) ){
 
-      this.buildUniqueTerms(title_words, key, 'title');
-      this.buildUniqueTerms(text_words, key, 'text');
+        //we break title and text and build their unique terms
+        let title_words = jsonObject[key].title.split(' ');
+        let text_words = jsonObject[key].text.split(' ');
 
+        this.buildUniqueTerms(title_words, key, 'title');
+        this.buildUniqueTerms(text_words, key, 'text');
+
+      }
     }
-    return this.temp;
+    this.invertedIndexes[fileName] = this.temp;
   }
 
   buildUniqueTerms( words, key, property ){
