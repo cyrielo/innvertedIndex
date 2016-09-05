@@ -290,5 +290,9 @@ class InvertedIndex {
     filepath = url.parse(filepath);
     return ( filepath.host !== '' && filepath.host !== null );
   }
+
+  removeIndex( filePath ){
+    delete this.invertedIndexes[filePath];
+  }
 }
 module.exports = new InvertedIndex();
