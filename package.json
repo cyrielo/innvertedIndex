@@ -1,0 +1,26 @@
+{
+  "name": "inverted-index",
+  "version": "1.0.0",
+  "description": "An inverted index consists of a list of all the unique  words that appear in any document, and for each word, a list of the documents in which it appears. This program aims to build an invertedIndex out of a JSON document supplied.",
+  "main": "src/inverted-index.js",
+  "scripts": {
+    "test": "jasmine-node spec/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyrielo/invertedIndex.git"
+  },
+  "keywords": [
+    "inverted-index",
+    "searching",
+    "indexing",
+    "full-text",
+    "search"
+  ],
+  "author": "Ologho Cyril Paul",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cyrielo/invertedIndex/issues"
+  },
+  "homepage": "https://github.com/cyrielo/invertedIndex#readme"
+}
