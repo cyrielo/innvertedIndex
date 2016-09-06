@@ -1,5 +1,6 @@
-![alt text](https://travis-ci.org/cyrielo/invertedIndex.svg?branch=master "Travis build for inveretdIndex")
-
+![Travis CI](https://travis-ci.org/cyrielo/invertedIndex.svg?branch=master
+"Travis build for inveretdIndex")
+[![Code Climate](https://codeclimate.com/github/cyrielo/invertedIndex/badges/gpa.svg)](https://codeclimate.com/github/cyrielo/invertedIndex)
 #invertedIndex
 An inverted index consists of a list of all the unique words that appear in
 any document, and for each word, a list of the documents in which it appears.
