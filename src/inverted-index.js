@@ -1,8 +1,16 @@
 "use strict";
+/**
+ * This program attempts to build an inverted index from a JSON file
+ * @class InvertedIndex
+ * @constructor
+ */
 class InvertedIndex {
   constructor(){
     /**
      * We need to save multiple inverted indexes
+     * @property invertedIndexes
+     * @type Object
+     * @default {}
      */
     this.invertedIndexes = {};
     this.temp = {}; //placeholder for when building the index
@@ -38,12 +46,10 @@ class InvertedIndex {
    * @return {Object} the object or objects indexed
    * */
   getIndex(filePath){
-    if( arguments.length < 1 ){
+    if(!filePath){
       return ( this.invertedIndexes );
     }
-    if(typeof filePath == 'string'){
-      return this.invertedIndexes[filePath];
-    }
+    return this.invertedIndexes[filePath];
   }
 
   /**
@@ -144,7 +150,7 @@ class InvertedIndex {
           let termProperties = this.temp[word][key];
           for( let i in termProperties ){
             //we need to be sure if the word appeared twice in the text or title
-            if(termProperties[i].key == property ){
+            if(termProperties[i].key === property ){
               termProperties[i].frequency = ++termProperties[i].frequency;
               termProperties[i].pos += ','+ index;
             }else{
@@ -183,16 +189,10 @@ class InvertedIndex {
    * */
   resolveParam(){
     for(let arg of arguments){
-      if( (arg instanceof Array) === true ) {
+      if( arg instanceof Object && typeof arg !== 'string' ) {
         for(let item in arg){
           if( arg.hasOwnProperty(item) ){
             this.resolveParam(arg[item]);
-          }
-        }
-      } else if( arg instanceof Object && typeof arg != 'string'){
-        for(let i in arg){
-          if( arg.hasOwnProperty(i) ){
-            this.resolveParam(arg[i]);
           }
         }
       }else{
@@ -212,7 +212,7 @@ class InvertedIndex {
       if( Array.isArray(obj) ){
         return ( obj.length < 1 ); // it's an empty array
       }
-      else if( typeof obj == 'object' ) {
+      else if( typeof obj === 'object' ) {
         return( Object.keys(obj).length < 1 ); //it's an empty object
       }
       else {
