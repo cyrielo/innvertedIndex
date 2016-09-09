@@ -4,7 +4,7 @@
   "description": "An inverted index consists of a list of all the unique  words that appear in any document, and for each word, a list of the documents in which it appears. This program aims to build an invertedIndex out of a JSON document supplied.",
   "main": "src/inverted-index.js",
   "scripts": {
-    "test": "jasmine-node spec/"
+    "test": "node jasmine-runner.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/cyrielo/invertedIndex/issues"
   },
-  "homepage": "https://github.com/cyrielo/invertedIndex#readme"
+  "homepage": "https://github.com/cyrielo/invertedIndex#readme",
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "jasmine-spec-reporter": "^2.7.0"
+  }
 }
