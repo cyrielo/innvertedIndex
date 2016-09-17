@@ -233,7 +233,6 @@ class InvertedIndex {
       //let's find out if the file is a remote file
       let isRemote = this.isRemote(filePath);
 
-
       if(isRemote){
         const http = require('http');
         const url  = require('url');
@@ -247,7 +246,21 @@ class InvertedIndex {
 
         http.get(options, response => {
           response.setEncoding('utf8');
-          response.on('data', data => fulfill( JSON.parse(data) ) );
+          response.on('data', data =>{
+
+            try {
+              let parsedObject = JSON.parse(data);
+
+              if(parsedObject && typeof parsedObject === "object") {
+                fulfill(parsedObject);
+              }else{
+                reject('JSON file is not valid');
+              }
+            }
+            catch (e) { 
+              reject('JSON file is not valid');
+            }
+          });
           response.on('error',error => reject( error ));
         });
 
@@ -260,7 +273,21 @@ class InvertedIndex {
             reject(status);
           }
           else{
-            fulfill(JSON.parse(data));
+
+            try {
+              let parsedObject = JSON.parse(data);
+
+
+
+              if(parsedObject && typeof parsedObject === "object") {
+                fulfill(parsedObject);
+              }else{
+                reject('JSON file is not valid');
+              }
+            }
+            catch (e) {
+              reject('JSON file is not valid');
+            }
           }
         });
       }
