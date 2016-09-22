@@ -27,11 +27,12 @@ class InvertedIndex {
   createIndex(filePath){
     return new Promise((fulfill, reject) => {
       this.readJsonFile(filePath).then( (jsonObject) => {
+        if( !this.isEmpty(jsonObject) ){
+          this.populateIndex( filePath, jsonObject ); //save the index
+          fulfill(this);
+        }
         //ask for the index to be built and populated
-        this.populateIndex( filePath, jsonObject ); //save the index
-
-        fulfill(this);
-
+        reject("Unable to build index, json is empty or not valid");
       }).catch((error) => {
 
         reject( error );
