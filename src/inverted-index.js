@@ -202,23 +202,28 @@ class InvertedIndex {
   }
 
   /**
-   * Asserts if an object is empty or not
+   * Asserts if an object is not empty and if it contains the property text 
+   * and title
    * @method isEmpty
-   * @param {Object} obj
+   * @param {Object} arrayObject
    * @return {Boolean} Returns true if empty
    */
-  isEmpty (obj){
-    if( obj !== undefined || obj !== null ){
-      if( Array.isArray(obj) ){
-        return ( obj.length < 1 ); // it's an empty array
-      }
-      else if( typeof obj === 'object' ) {
-        return( Object.keys(obj).length < 1 ); //it's an empty object
-      }
-      else {
-        return true; //it's either undefined or null
+
+  isEmpty(arrayObject){
+    if(typeof arrayObject === 'object') {
+      // it's an object
+      if((Object.keys(arrayObject).length > 0)) {
+        //it has some contents
+        for(let key in arrayObject) {
+          if(arrayObject[key].hasOwnProperty('title') &&
+              arrayObject[key].hasOwnProperty('text')) {
+            //the content is an array of object with property text and title
+            return false;
+          }
+        }
       }
     }
+    return true;
   }
 
   /**
@@ -270,7 +275,11 @@ class InvertedIndex {
 
         fs.readFile(filePath, 'utf-8', (status, data) => {
           if( status !== null ){
-            reject(status);
+            if(status.code === 'ENOENT'){
+              reject( "Sorry, the file '"+status.path+"' does not exist!" );
+            }else{
+              reject(status);
+            }
           }
           else{
 

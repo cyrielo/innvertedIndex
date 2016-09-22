@@ -6,5 +6,7 @@
   "evil" : true,
   "esversion": 6,
   "strict" : true,
-  "jasmine" : true
+  "jasmine" : true,
+  "esnext" : true
+
 }
