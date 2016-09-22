@@ -1,17 +1,17 @@
-"use strict";
-describe('InvertedIndex',function(){
+'use strict';
+describe('InvertedIndex', ()=> {
   let index = require('../src/inverted-index');
-  let book_path = 'jasmine/books.json';
-  let doc_path = 'jasmine/document.json';
-  index.createIndex(book_path).then( data =>{
+  let bookPath = 'jasmine/books.json';
+  let docPath = 'jasmine/document.json';
+  index.createIndex(bookPath).then(data => {
 
   });
 
-  describe("Read book data", function() {
+  describe('Read book data', ()=> {
 
-    it("should reads the JSON file and asserts that it is not empty", function(done){
-      index.readJsonFile(book_path).then( data =>{
-        expect( index.isEmpty(data) ).toBe(false);
+    it('should reads the JSON file and asserts that it is not empty', done => {
+      index.readJsonFile(bookPath).then(data => {
+        expect(index.isEmpty(data)).toBe(false);
         done();
       });
 
@@ -20,68 +20,69 @@ describe('InvertedIndex',function(){
     /*Ensure each object in JSON array contains a property whose
      value is a string.*/
     it('should ensure each object in JSON array contains a property whose' +
-      ' value is a string', function(done){
-      index.readJsonFile(book_path).then( data =>{
-        for(let obj of data){
-          expect( typeof obj.title ).toEqual('string');
-          expect( typeof obj.text ).toEqual('string');
+      ' value is a string',  done => {
+      index.readJsonFile(bookPath).then(data => {
+        for (let obj of data) {
+          expect(typeof obj.title).toEqual('string');
+          expect(typeof obj.text).toEqual('string');
         }
+
         done();
       });
     });
 
   });
 
-  describe('Populate Index', function(){
+  describe('Populate Index', ()=> {
 
-    it('should verify that the index is created', function(){
-      expect( Object.keys(index.invertedIndexes).length ).toBeGreaterThan(0);
+    it('should verify that the index is created', ()=> {
+      expect(Object.keys(index.invertedIndexes).length).toBeGreaterThan(0);
     });
 
     it('should verifies the index maps the string keys to the correct' +
-      ' objects in the JSON array', function(){
-      expect( index.searchIndex('Alice', 'elf') ).toEqual(['0', '1']);
+      ' objects in the JSON array', ()=> {
+      expect(index.searchIndex('Alice', 'elf')).toEqual(['0', '1']);
     });
 
-    it('Should verify data multiple index could be built', function(done){
-      index.createIndex(doc_path).then(()=>{
-        expect( Object.keys(index.invertedIndexes).length ).toEqual(2);
+    it('Should verify data multiple index could be built', done=> {
+      index.createIndex(docPath).then(()=> {
+        expect(Object.keys(index.invertedIndexes).length).toEqual(2);
         done();
       });
     });
 
-    it('Should be able to delete an invertedIndex object by it\'s file path', function(){
-      index.removeIndex(doc_path);
-      expect( Object.keys(index.invertedIndexes).length ).toEqual(1);
+    it("Should be able to delete an invertedIndex object by it 's file path", () => {
+      index.removeIndex(docPath);
+      expect(Object.keys(index.invertedIndexes).length).toEqual(1);
     });
   });
 
-  describe('Search index', function(){
-    it('should ensure search does not take too long to execute',function(){
-      let runtime_threshold = 1000;
-      let current_millisecond =  new Date().getMilliseconds();
+  describe('Search index', () => {
+    it('should ensure search does not take too long to execute', ()=> {
+      let runtimeThreshold = 1000;
+      let currentMillisecond =  new Date().getMilliseconds();
 
-      index.searchIndex('Alice', ['Fellowship', ['dwarf'], 'in'  ]);
+      index.searchIndex('Alice', ['Fellowship', ['dwarf'], 'in']);
 
-      let final_milliseconds =  new Date().getMilliseconds();
-      let time_difference = final_milliseconds - current_millisecond;
+      let finalMilliseconds =  new Date().getMilliseconds();
+      let timeDifference = finalMilliseconds - currentMillisecond;
 
-      expect( time_difference ).toBeLessThan( runtime_threshold );
+      expect(timeDifference).toBeLessThan(runtimeThreshold);
 
     });
 
     it('should ensure searchIndex can handle a varied number of search terms as ' +
-      'arguments',function(){
-      expect( index.searchIndex('Alice', 'Cyril', 'Lord') ).toEqual(['0', '', '1']);
+    'arguments', () => {
+      expect(index.searchIndex('Alice', 'Cyril', 'Lord')).toEqual(['0', '', '1']);
     });
 
-    it('should ensure searchIndex can handle an array of search terms',function(){
-      expect(index.searchIndex('Alice', ['Fellowship', ['dwarf']  ]) ).toEqual(
-        ['0', '1', '1'] );
+    it('should ensure searchIndex can handle an array of search terms', () => {
+      expect(index.searchIndex('Alice', ['Fellowship', ['dwarf']])).toEqual(
+        ['0', '1', '1']);
     });
 
-    it('should be able to search a specific index', function(){
-      expect(index.searchSpecificIndex( 'Alice', book_path ) ).toEqual(['0']);
+    it('should be able to search a specific index', () => {
+      expect(index.searchSpecificIndex('Alice', bookPath)).toEqual(['0']);
     });
 
   });

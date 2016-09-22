@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 /**
  * This program attempts to build an inverted index from a JSON file
  * @class InvertedIndex
  * @constructor
  */
 class InvertedIndex {
-  constructor(){
+  constructor() {
     /**
      * We need to save multiple inverted indexes
      * @property invertedIndexes
@@ -24,18 +24,19 @@ class InvertedIndex {
    * @param {String} filePath
    * @return {Promise}
    */
-  createIndex(filePath){
+  createIndex(filePath) {
     return new Promise((fulfill, reject) => {
-      this.readJsonFile(filePath).then( (jsonObject) => {
-        if( !this.isEmpty(jsonObject) ){
-          this.populateIndex( filePath, jsonObject ); //save the index
+      this.readJsonFile(filePath).then((jsonObject) => {
+        if (!this.isEmpty(jsonObject)) {
+          this.populateIndex(filePath, jsonObject); //save the index
           fulfill(this);
         }
-        //ask for the index to be built and populated
-        reject("Unable to build index, json is empty or not valid");
+
+        // ask for the index to be built and populated
+        reject('Unable to build index, json is empty or not valid');
       }).catch((error) => {
 
-        reject( error );
+        reject(error);
 
       });
     });
@@ -46,10 +47,11 @@ class InvertedIndex {
    * @param filePath (Optional) the specific JSON file indexed
    * @return {Object} the object or objects indexed
    * */
-  getIndex(filePath){
-    if(!filePath){
-      return ( this.invertedIndexes );
+  getIndex(filePath) {
+    if (!filePath) {
+      return (this.invertedIndexes);
     }
+
     return this.invertedIndexes[filePath];
   }
 
@@ -59,24 +61,25 @@ class InvertedIndex {
    * @param {Object} varied string search terms, deep nested arrays
    * @return {Object}
    * */
-  searchIndex(){
-    let search_result = [];
-    let recent_index = this.getRecentIndex();
-    this.resolveParam( arguments ); //we resolve complex search terms
+  searchIndex() {
+    let searchResult = [];
+    let recentIndex = this.getRecentIndex();
+    this.resolveParam(arguments); //we resolve complex search terms
 
-    for(let param of this.temp_search){
+    for (let param of this.temp_search) {
       let words = param.split(' ');
-      for(let word of words){
+      for (let word of words) {
         word = this.filterWord(word);
-        if( recent_index.hasOwnProperty( word ) ){
-          search_result.push( Object.keys(recent_index[word])[0] );
-        }else{
-         search_result.push('');
+        if (recentIndex.hasOwnProperty(word)) {
+          searchResult.push(Object.keys(recentIndex[word])[0]);
+        } else {
+          searchResult.push('');
         }
       }
     }
+
     this.temp_search = [];
-    return search_result;
+    return searchResult;
   }
   /**
    * Searches only the specified indexed file based on the filepath
@@ -85,32 +88,33 @@ class InvertedIndex {
    * @param {String} filepath the location of the file
    * @return {Array}
    * */
-  searchSpecificIndex(terms, filepath){
-    let search_result = [];
+  searchSpecificIndex(terms, filepath) {
+    let searchResult = [];
     let index = this.getIndex(filepath);
-    this.resolveParam( arguments ); //we resolve complex search terms
+    this.resolveParam(arguments); //we resolve complex search terms
 
-    for(let param of this.temp_search){
+    for (let param of this.temp_search) {
       let words = param.split(' ');
-      for(let word of words){
+      for (let word of words) {
         word = this.filterWord(word);
-        if( index.hasOwnProperty( word ) ){
-          search_result.push( Object.keys(index[word])[0] );
+        if (index.hasOwnProperty(word)) {
+          searchResult.push(Object.keys(index[word])[0]);
         }
       }
     }
+
     this.temp_search = [];
-    return search_result;
+    return searchResult;
   }
   /**
    * Gets the recently created index
    * @method getRecentIndex
    * @return {Object}
    * */
-  getRecentIndex(){
-    let file_paths = Object.keys(this.getIndex());
-    let recent_path = file_paths[ file_paths.length - 1 ];
-    return this.getIndex( recent_path );
+  getRecentIndex() {
+    let filePaths = Object.keys(this.getIndex());
+    let recentPath = filePaths[filePaths.length - 1];
+    return this.getIndex(recentPath);
   }
   /**
    * saves multiple index created using their fileName as key
@@ -119,52 +123,52 @@ class InvertedIndex {
    * @param {Object} jsonObject
    * @return undefined
    **/
-  populateIndex( fileName, jsonObject ){
+  populateIndex(fileName, jsonObject) {
     this.temp = {}; //makes sure the placeholder is empty before building
-    for( let key in jsonObject ){
-      if( jsonObject.hasOwnProperty(key) ){
+    for (let key in jsonObject) {
+      if (jsonObject.hasOwnProperty(key)) {
 
         //we break title and text and build their unique terms
-        let title_words = jsonObject[key].title.split(' ');
-        let text_words = jsonObject[key].text.split(' ');
+        let titleWords = jsonObject[key].title.split(' ');
+        let textWords = jsonObject[key].text.split(' ');
 
-        this.buildUniqueTerms(title_words, key, 'title');
-        this.buildUniqueTerms(text_words, key, 'text');
+        this.buildUniqueTerms(titleWords, key, 'title');
+        this.buildUniqueTerms(textWords, key, 'text');
 
       }
     }
+
     this.invertedIndexes[fileName] = this.temp;
   }
 
-  buildUniqueTerms( words, key, property ){
+  buildUniqueTerms(words, key, property) {
     //let's walk over each word
-    words.map( (word, index) => {
+    words.map((word, index) => {
       word = this.filterWord(word); //filter special character
-      if(!this.temp.hasOwnProperty(word) ){
+      if (!this.temp.hasOwnProperty(word)) {
         this.temp[word] = {};
-        this.temp[word][key] = [{key : property, frequency : 1, pos : index}];
-      }
-      else{
+        this.temp[word][key] = [{ key: property, frequency: 1, pos: index, }];
+      } else {
         //since the word already exist we try to increase it's frequency
         //and adds the position of each word separated by comma
-        if( this.temp[word].hasOwnProperty(key) ){ //it point to same indices?
+        if (this.temp[word].hasOwnProperty(key)) { //it point to same indices?
           let termProperties = this.temp[word][key];
-          for( let i in termProperties ){
+          for (let i in termProperties) {
             //we need to be sure if the word appeared twice in the text or title
-            if(termProperties[i].key === property ){
+            if (termProperties[i].key === property) {
               termProperties[i].frequency = ++termProperties[i].frequency;
-              termProperties[i].pos += ','+ index;
-            }else{
+              termProperties[i].pos += ',' + index;
+            }else {
               termProperties.push({
-                key : property,
-                frequency : 1,
-                pos : index
+                key: property,
+                frequency: 1,
+                pos: index,
               });
             }
 
           }
-        }else{
-          this.temp[word][key] = [{key : property, frequency : 1, pos : index}];
+        }else {
+          this.temp[word][key] = [{ key: property, frequency: 1, pos: index, }];
         }
 
       }
@@ -179,8 +183,8 @@ class InvertedIndex {
    * @param {String} word
    * @return {String} the filtered word
    * */
-  filterWord(word){
-   return word.toLowerCase().replace(/[^a-zA-Z 0-9]+/g, '');
+  filterWord(word) {
+    return word.toLowerCase().replace(/[^a-zA-Z 0-9]+/g, '');
   }
 
   /**
@@ -188,35 +192,34 @@ class InvertedIndex {
    * @method resolveParam
    * @return undefined
    * */
-  resolveParam(){
-    for(let arg of arguments){
-      if( arg instanceof Object && typeof arg !== 'string' ) {
-        for(let item in arg){
-          if( arg.hasOwnProperty(item) ){
+  resolveParam() {
+    for (let arg of arguments) {
+      if (arg instanceof Object && typeof arg !== 'string') {
+        for (let item in arg) {
+          if (arg.hasOwnProperty(item)) {
             this.resolveParam(arg[item]);
           }
         }
-      }else{
+      }else {
         this.temp_search.push(arg);
       }
     }
   }
 
   /**
-   * Asserts if an object is not empty and if it contains the property text 
+   * Asserts if an object is not empty and if it contains the property text
    * and title
    * @method isEmpty
    * @param {Object} arrayObject
    * @return {Boolean} Returns true if empty
-   */
-
-  isEmpty(arrayObject){
-    if(typeof arrayObject === 'object') {
+   * */
+  isEmpty(arrayObject) {
+    if (typeof arrayObject === 'object') {
       // it's an object
-      if((Object.keys(arrayObject).length > 0)) {
+      if ((Object.keys(arrayObject).length > 0)) {
         //it has some contents
-        for(let key in arrayObject) {
-          if(arrayObject[key].hasOwnProperty('title') &&
+        for (let key in arrayObject) {
+          if (arrayObject[key].hasOwnProperty('title') &&
               arrayObject[key].hasOwnProperty('text')) {
             //the content is an array of object with property text and title
             return false;
@@ -224,6 +227,7 @@ class InvertedIndex {
         }
       }
     }
+
     return true;
   }
 
@@ -234,64 +238,59 @@ class InvertedIndex {
    * @param {String} filePath location of file to read
    * return {Promise}
    */
-  readJsonFile(filePath ){
-    return new Promise( (fulfill, reject) => {
+  readJsonFile(filePath) {
+    return new Promise((fulfill, reject) => {
       //let's find out if the file is a remote file
       let isRemote = this.isRemote(filePath);
 
-      if(isRemote){
+      if (isRemote) {
         const http = require('http');
         const url  = require('url');
 
-        filePath = url.parse( filePath );
+        filePath = url.parse(filePath);
 
         let options = {
           host: filePath.host,
-          path : filePath.path
+          path: filePath.path,
         };
 
         http.get(options, response => {
           response.setEncoding('utf8');
-          response.on('data', data =>{
+          response.on('data', data => {
 
             try {
               let parsedObject = JSON.parse(data);
 
-              if(parsedObject && typeof parsedObject === "object") {
+              if (parsedObject && typeof parsedObject === 'object') {
                 fulfill(parsedObject);
-              }else{
+              }else {
                 reject('JSON file is not valid');
               }
             }
-            catch (e) { 
+            catch (e) {
               reject('JSON file is not valid');
             }
           });
-          response.on('error',error => reject( error ));
+          response.on('error', error => reject(error));
         });
 
-      }else{
+      }else {
         //it's probably a local file
         const fs = require('fs');
 
         fs.readFile(filePath, 'utf-8', (status, data) => {
-          if( status !== null ){
-            if(status.code === 'ENOENT'){
-              reject( "Sorry, the file '"+status.path+"' does not exist!" );
-            }else{
+          if (status !== null) {
+            if (status.code === 'ENOENT') {
+              reject("Sorry, the file '" + status.path + "' does not exist!");
+            }else {
               reject(status);
             }
-          }
-          else{
-
+          } else {
             try {
               let parsedObject = JSON.parse(data);
-
-
-
-              if(parsedObject && typeof parsedObject === "object") {
+              if (parsedObject && typeof parsedObject === 'object') {
                 fulfill(parsedObject);
-              }else{
+              }else {
                 reject('JSON file is not valid');
               }
             }
@@ -310,14 +309,14 @@ class InvertedIndex {
    * @param {String} filepath The file path
    * @return {Boolean} Returns true if it's a remote file
    */
-  isRemote( filepath ){
+  isRemote(filepath) {
     //does the path have a host?
     const url   = require('url');
     filepath = url.parse(filepath);
-    return ( filepath.host !== '' && filepath.host !== null );
+    return (filepath.host !== '' && filepath.host !== null);
   }
 
-  removeIndex( filePath ){
+  removeIndex(filePath) {
     delete this.invertedIndexes[filePath];
   }
 }
