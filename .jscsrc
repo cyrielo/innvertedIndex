@@ -1,5 +1,6 @@
 {
   "maxErrors": 1000,
+  "disallowNewlineBeforeBlockStatements": true,
   "disallowSpacesInNamedFunctionExpression": {
     "beforeOpeningRoundBrace": true
   },
