@@ -158,7 +158,7 @@ class InvertedIndex {
             if (termProperties[i].key === property) {
               termProperties[i].frequency = ++termProperties[i].frequency;
               termProperties[i].pos += ',' + index;
-            }else {
+            } else {
               termProperties.push({
                 key: property,
                 frequency: 1,
@@ -167,7 +167,7 @@ class InvertedIndex {
             }
 
           }
-        }else {
+        } else {
           this.temp[word][key] = [{ key: property, frequency: 1, pos: index, }];
         }
 
@@ -200,7 +200,7 @@ class InvertedIndex {
             this.resolveParam(arg[item]);
           }
         }
-      }else {
+      } else {
         this.temp_search.push(arg);
       }
     }
@@ -263,18 +263,17 @@ class InvertedIndex {
 
               if (parsedObject && typeof parsedObject === 'object') {
                 fulfill(parsedObject);
-              }else {
+              } else {
                 reject('JSON file is not valid');
               }
-            }
-            catch (e) {
+            } catch (e) {
               reject('JSON file is not valid');
             }
           });
           response.on('error', error => reject(error));
         });
 
-      }else {
+      } else {
         //it's probably a local file
         const fs = require('fs');
 
@@ -282,7 +281,7 @@ class InvertedIndex {
           if (status !== null) {
             if (status.code === 'ENOENT') {
               reject("Sorry, the file '" + status.path + "' does not exist!");
-            }else {
+            } else {
               reject(status);
             }
           } else {
@@ -290,11 +289,10 @@ class InvertedIndex {
               let parsedObject = JSON.parse(data);
               if (parsedObject && typeof parsedObject === 'object') {
                 fulfill(parsedObject);
-              }else {
+              } else {
                 reject('JSON file is not valid');
               }
-            }
-            catch (e) {
+            } catch (e) {
               reject('JSON file is not valid');
             }
           }
